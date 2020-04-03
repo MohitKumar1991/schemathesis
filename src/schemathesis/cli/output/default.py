@@ -12,6 +12,7 @@ from ...models import Status
 from ...runner import events
 from ...runner.serialization import SerializedCase, SerializedCheck, SerializedTestResult
 from ..context import ExecutionContext
+from ..handlers import EventHandler
 
 
 def get_terminal_width() -> int:
@@ -329,18 +330,19 @@ def handle_internal_error(context: ExecutionContext, event: events.InternalError
     raise click.Abort
 
 
-def handle_event(context: ExecutionContext, event: events.ExecutionEvent) -> None:
-    """Choose and execute a proper handler for the given event."""
-    if isinstance(event, events.Initialized):
-        handle_initialized(context, event)
-    if isinstance(event, events.BeforeExecution):
-        handle_before_execution(context, event)
-    if isinstance(event, events.AfterExecution):
-        context.hypothesis_output.extend(event.hypothesis_output)
-        handle_after_execution(context, event)
-    if isinstance(event, events.Finished):
-        handle_finished(context, event)
-    if isinstance(event, events.Interrupted):
-        handle_interrupted(context, event)
-    if isinstance(event, events.InternalError):
-        handle_internal_error(context, event)
+class DefaultOutputStyleHandler(EventHandler):
+    def handle_event(self, context: ExecutionContext, event: events.ExecutionEvent) -> None:
+        """Choose and execute a proper handler for the given event."""
+        if isinstance(event, events.Initialized):
+            handle_initialized(context, event)
+        if isinstance(event, events.BeforeExecution):
+            handle_before_execution(context, event)
+        if isinstance(event, events.AfterExecution):
+            context.hypothesis_output.extend(event.hypothesis_output)
+            handle_after_execution(context, event)
+        if isinstance(event, events.Finished):
+            handle_finished(context, event)
+        if isinstance(event, events.Interrupted):
+            handle_interrupted(context, event)
+        if isinstance(event, events.InternalError):
+            handle_internal_error(context, event)

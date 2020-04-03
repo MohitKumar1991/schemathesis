@@ -183,6 +183,7 @@ def test_commands_run_help(cli):
         "",
         "  --validate-schema BOOLEAN       Enable or disable validation of input schema.",
         "  --show-errors-tracebacks        Show full tracebacks for internal errors.",
+        "  --store-network-log FILENAME    Store requests and responses into a file",
         "  --hypothesis-deadline INTEGER RANGE",
         "                                  Duration in milliseconds that each individual",
         "                                  example with a test is not allowed to exceed.",
@@ -270,6 +271,7 @@ def test_execute_arguments(cli, mocker, simple_schema, args, expected):
         "auth_type": None,
         "headers": {},
         "request_timeout": None,
+        "store_interactions": False,
         "seed": None,
         **expected,
     }
